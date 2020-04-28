@@ -6,7 +6,20 @@ $url = "https://graph.microsoft.com/beta/AuditLogs/signins"
 $Headers = @{
 'Authorization' = "bearer $accessToken"
 }
+
 $outputFile = "C:\Reporting\Report.csv"
-$myReport = (Invoke-WebRequest -UseBasicParsing -Headers $Headers -Uri $url)
-$convertedReport = ($myReport.Content | ConvertFrom-Json)
-$convertedReport | ConvertTo-Csv -NoTypeInformation | Add-Content $outputFile
+ 
+$Users = Invoke-MSCloudIdMSGraphQuery -AccessToken $accessToken -GraphQuery "/v1.0/AuditLogs/signins"
+
+#$Users
+
+
+#Convert the stream result to an array
+$resultarray = ConvertFrom-Csv -InputObject $Users
+#Export result to CSV
+$resultarray | Export-Csv "C:\SiteUsage.csv" -NoTypeInformation
+
+
+
+#Invoke-WebRequest
+#Invoke-MSCloudIdMSGraphQuery
